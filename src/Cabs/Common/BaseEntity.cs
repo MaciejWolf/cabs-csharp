@@ -1,13 +1,13 @@
- namespace LegacyFighter.Cabs.Common;
+namespace LegacyFighter.Cabs.Common;
 
 public class BaseEntity
 {
-  private int? Version { get; set; }
+    private int? Version { get; set; }
 
-  public override int GetHashCode()
-  {
-    return GetType().GetHashCode();
-  }
+    public override int GetHashCode()
+    {
+        return GetType().GetHashCode();
+    }
 
-  public long? Id { get; }
+    public long? Id { get; }
 }

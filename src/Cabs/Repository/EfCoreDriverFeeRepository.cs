@@ -5,28 +5,28 @@ namespace LegacyFighter.Cabs.Repository;
 
 public interface IDriverFeeRepository
 {
-  Task<DriverFee> FindByDriver(Driver driver);
-  Task<DriverFee> Save(DriverFee driverFee);
+    Task<DriverFee> FindByDriver(Driver driver);
+    Task<DriverFee> Save(DriverFee driverFee);
 }
 
 internal class EfCoreDriverFeeRepository : IDriverFeeRepository
 {
-  private readonly SqLiteDbContext _context;
+    private readonly SqLiteDbContext _context;
 
-  public EfCoreDriverFeeRepository(SqLiteDbContext context)
-  {
-    _context = context;
-  }
+    public EfCoreDriverFeeRepository(SqLiteDbContext context)
+    {
+        _context = context;
+    }
 
-  public async Task<DriverFee> FindByDriver(Driver driver)
-  {
-    return await _context.DriverFees.FirstOrDefaultAsync(f => f.Driver == driver);
-  }
+    public async Task<DriverFee> FindByDriver(Driver driver)
+    {
+        return await _context.DriverFees.FirstOrDefaultAsync(f => f.Driver == driver);
+    }
 
-  public async Task<DriverFee> Save(DriverFee driverFee)
-  {
-    _context.DriverFees.Update(driverFee);
-    await _context.SaveChangesAsync();
-    return driverFee;
-  }
+    public async Task<DriverFee> Save(DriverFee driverFee)
+    {
+        _context.DriverFees.Update(driverFee);
+        await _context.SaveChangesAsync();
+        return driverFee;
+    }
 }

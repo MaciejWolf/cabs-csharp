@@ -27,9 +27,9 @@ builder.Services.AddTransient<IContractRepository, EfCoreContractRepository>();
 builder.Services.AddTransient<IContractAttachmentRepository, EfCoreContractAttachmentRepository>();
 builder.Services.AddTransient<ICarTypeRepository, EfCoreCarTypeRepository>();
 builder.Services.AddTransient<ClaimService>();
-builder.Services.AddTransient<IClaimService>(ctx => 
+builder.Services.AddTransient<IClaimService>(ctx =>
   new TransactionalClaimService(
-    ctx.GetRequiredService<ClaimService>(), 
+    ctx.GetRequiredService<ClaimService>(),
     ctx.GetRequiredService<ITransactions>()));
 builder.Services.AddTransient<AwardsServiceImpl>();
 builder.Services.AddTransient<IAwardsService>(ctx =>
@@ -41,17 +41,17 @@ builder.Services.AddTransient<IDriverNotificationService, DriverNotificationServ
 builder.Services.AddTransient<CarTypeService>();
 builder.Services.AddTransient<ICarTypeService>(
   ctx => new TransactionalCarTypeService(
-    ctx.GetRequiredService<CarTypeService>(), 
+    ctx.GetRequiredService<CarTypeService>(),
     ctx.GetRequiredService<ITransactions>()));
 builder.Services.AddTransient<ClientService>();
 builder.Services.AddTransient<IClientService>(
   ctx => new TransactionalClientService(
-    ctx.GetRequiredService<ClientService>(), 
+    ctx.GetRequiredService<ClientService>(),
     ctx.GetRequiredService<ITransactions>()));
 builder.Services.AddTransient<DriverService>();
 builder.Services.AddTransient<IDriverService>(ctx =>
   new TransactionalDriverService(
-    ctx.GetRequiredService<DriverService>(), 
+    ctx.GetRequiredService<DriverService>(),
     ctx.GetRequiredService<ITransactions>()));
 builder.Services.AddTransient<DriverFeeService>();
 builder.Services.AddTransient<IDriverFeeService>(ctx =>
@@ -70,9 +70,9 @@ builder.Services.AddTransient<IDriverSessionService>(ctx =>
     ctx.GetRequiredService<ITransactions>()));
 builder.Services.AddTransient<IGeocodingService, GeocodingService>();
 builder.Services.AddTransient<ContractService>();
-builder.Services.AddTransient<IContractService>(ctx => 
+builder.Services.AddTransient<IContractService>(ctx =>
   new TransactionalContractService(
-    ctx.GetRequiredService<ContractService>(), 
+    ctx.GetRequiredService<ContractService>(),
     ctx.GetRequiredService<ITransactions>()));
 builder.Services.AddTransient<TransitService>();
 builder.Services.AddTransient<ITransitService>(ctx =>
@@ -96,8 +96,8 @@ var app = builder.Build();
 
 using (var serviceScope = app.Services.CreateScope())
 {
-  var context = serviceScope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
-  await context.Database.EnsureCreatedAsync();
+    var context = serviceScope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
+    await context.Database.EnsureCreatedAsync();
 }
 
 // Configure the HTTP request pipeline.

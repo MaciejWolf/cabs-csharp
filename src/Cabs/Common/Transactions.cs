@@ -4,23 +4,23 @@ namespace LegacyFighter.Cabs.Common;
 
 public class Transactions : ITransactions
 {
-  private readonly SqLiteDbContext _context;
+    private readonly SqLiteDbContext _context;
 
-  public Transactions(SqLiteDbContext context)
-  {
-    _context = context;
-  }
+    public Transactions(SqLiteDbContext context)
+    {
+        _context = context;
+    }
 
-  public async Task<ITransaction> BeginTransaction()
-  {
-    if (_context.Database.CurrentTransaction == null)
+    public async Task<ITransaction> BeginTransaction()
     {
-      return new Transaction(
-        await _context.Database.BeginTransactionAsync(), _context);
+        if (_context.Database.CurrentTransaction == null)
+        {
+            return new Transaction(
+              await _context.Database.BeginTransactionAsync(), _context);
+        }
+        else
+        {
+            return new NullTransaction();
+        }
     }
-    else
-    {
-      return new NullTransaction();
-    }
-  }
 }

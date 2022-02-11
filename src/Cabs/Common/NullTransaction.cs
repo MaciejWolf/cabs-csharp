@@ -2,13 +2,13 @@
 
 public class NullTransaction : ITransaction
 {
-  public async ValueTask DisposeAsync()
-  {
-      
-  }
+    public async ValueTask DisposeAsync()
+    {
 
-  public async Task Commit()
-  {
+    }
 
-  }
+    public async Task Commit()
+    {
+
+    }
 }
