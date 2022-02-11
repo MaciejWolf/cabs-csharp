@@ -8,6 +8,8 @@ public record DriverLicense
 
     private readonly string value;
 
+    public string ValueAsString => value;
+
     private DriverLicense(string value)
     {
         this.value = value;
@@ -25,6 +27,4 @@ public record DriverLicense
 
     private static bool IsValid(string license) 
         => license is not null && license.Any() && Regex.IsMatch(license, DriverLicenseRegex);
-
-    public string AsString() => value;
 }

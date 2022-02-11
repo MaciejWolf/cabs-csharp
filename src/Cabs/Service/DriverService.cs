@@ -31,15 +31,11 @@ public class DriverService : IDriverService
       Driver.Statuses status, string photo)
     {
         var driver = new Driver();
-        if (status == Driver.Statuses.Active)
-        {
-            if (license == null || !license.Any() || !Regex.IsMatch(license, DriverLicenseRegex))
-            {
-                throw new ArgumentException("Illegal license no = " + license);
-            }
-        }
 
-        driver.DriverLicense = license;
+        driver.DriverLicense = status == Driver.Statuses.Active 
+            ? DriverLicense.WithLicense(license).ValueAsString
+            : DriverLicense.WithoutValidation(license).ValueAsString;
+
         driver.LastName = lastName;
         driver.FirstName = firstName;
         driver.Status = status;
@@ -78,8 +74,6 @@ public class DriverService : IDriverService
         }
 
         driver.DriverLicense = newLicense;
-
-
     }
 
 

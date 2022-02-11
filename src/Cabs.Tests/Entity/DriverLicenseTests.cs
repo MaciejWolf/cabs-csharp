@@ -24,7 +24,7 @@ public class DriverLicenseTests
 
         var driverLicense = DriverLicense.WithLicense(ValidLicense);
 
-        driverLicense.AsString().Should().Be(ValidLicense);
+        driverLicense.ValueAsString.Should().Be(ValidLicense);
     }
 
     [Theory]
@@ -35,6 +35,6 @@ public class DriverLicenseTests
     {
         var driverLicense = DriverLicense.WithoutValidation(license);
 
-        driverLicense.AsString().Should().Be(license);
+        driverLicense.ValueAsString.Should().Be(license);
     }
 }
