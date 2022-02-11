@@ -84,6 +84,7 @@ public class DriverService : IDriverService
 
         if (status == Driver.Statuses.Active)
         {
+            // hack to keep the same observable behaviour
             try
             {
                 DriverLicense.WithLicense(driver.DriverLicense.ValueAsString);

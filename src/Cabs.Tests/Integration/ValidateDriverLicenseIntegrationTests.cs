@@ -44,6 +44,7 @@ public class ValidateDriverLicenseIntegrationTests : IAsyncLifetime
 
     // This case is not handled in course
     // I don't know how to configure it in EF
+    // Its weird and invalid behaviour anyway
     // TODO Me: handle this
     //[Fact]
     //public async Task CannotCreateInactiveDriverWithNullLicense()
