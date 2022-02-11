@@ -33,8 +33,8 @@ public class DriverService : IDriverService
         var driver = new Driver();
 
         driver.DriverLicense = status == Driver.Statuses.Active
-            ? DriverLicense.WithLicense(license).ValueAsString
-            : DriverLicense.WithoutValidation(license).ValueAsString;
+            ? DriverLicense.WithLicense(license)
+            : DriverLicense.WithoutValidation(license);
 
         driver.LastName = lastName;
         driver.FirstName = firstName;
@@ -70,7 +70,7 @@ public class DriverService : IDriverService
             throw new InvalidOperationException("Driver is not active, cannot change license");
         }
 
-        driver.DriverLicense = license.ValueAsString;
+        driver.DriverLicense = license;
     }
 
 
@@ -86,7 +86,7 @@ public class DriverService : IDriverService
         {
             try
             {
-                DriverLicense.WithLicense(driver.DriverLicense);
+                DriverLicense.WithLicense(driver.DriverLicense.ValueAsString);
             }
             catch (ArgumentException)
             {

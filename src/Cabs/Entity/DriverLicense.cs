@@ -6,13 +6,16 @@ public record DriverLicense
 {
     private const string DriverLicenseRegex = "^[A-Z9]{5}\\d{6}[A-Z9]{2}\\d[A-Z]{2}$";
 
-    private readonly string value;
-
-    public string ValueAsString => value;
+    public string ValueAsString { get; private set; }
 
     private DriverLicense(string value)
     {
-        this.value = value;
+        ValueAsString = value;
+    }
+
+    protected DriverLicense()
+    {
+        // For EF
     }
 
     public static DriverLicense WithLicense(string driverLicense)
