@@ -32,9 +32,19 @@ public class DriverService : IDriverService
     {
         var driver = new Driver();
 
-        driver.DriverLicense = status == Driver.Statuses.Active 
-            ? DriverLicense.WithLicense(license).ValueAsString
-            : DriverLicense.WithoutValidation(license).ValueAsString;
+        //driver.DriverLicense = status == Driver.Statuses.Active 
+        //    ? DriverLicense.WithLicense(license).ValueAsString
+        //    : DriverLicense.WithoutValidation(license).ValueAsString;
+
+        if (status == Driver.Statuses.Active)
+        {
+            if (license == null || !license.Any() || !Regex.IsMatch(license, DriverLicenseRegex))
+            {
+                throw new ArgumentException("Illegal license no = " + license);
+            }
+        }
+
+        driver.DriverLicense = license;
 
         driver.LastName = lastName;
         driver.FirstName = firstName;

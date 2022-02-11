@@ -42,12 +42,10 @@ public class ValidateDriverLicenseIntegrationTests : IAsyncLifetime
         dto.Status.Should().Be(Driver.Statuses.Inactive);
     }
 
-    [Theory]
-    [InlineData(Driver.Statuses.Active)]
-    [InlineData(Driver.Statuses.Inactive)]
-    public async Task CannotCreateDriverWithNullLicense(Driver.Statuses status)
+    [Fact]
+    public async Task CannotCreateInactiveDriverWithNullLicense()
     {
-        var act = async () => await CreateDriver(null, status);
+        var act = async () => await CreateInactiveDriver(null!);
         await act.Should().ThrowAsync<Exception>();
     }
 
@@ -65,6 +63,29 @@ public class ValidateDriverLicenseIntegrationTests : IAsyncLifetime
         dto.Status.Should().Be(status);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("InvalidLicense")]
+    public async Task CannotChangeToInvalidLicense(string license)
+    {
+        var driver = await CreateInactiveDriver("InitialInvalidLicense");
+
+        var act = async () => await ChangeLicenseNumber(driver, license);
+
+        await act.Should().ThrowExactlyAsync<ArgumentException>();
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("InvalidLicense")]
+    public async Task CannotActivateDriverWithInvalidLicense(string license)
+    {
+        var driver = await CreateInactiveDriver(license);
+        var act = async () => await ActivateDriver(driver);
+        await act.Should().ThrowExactlyAsync<InvalidOperationException>();
+    }
+
     private Task<Driver> CreateActiveDriver(string license) 
         => CreateDriver(license, Driver.Statuses.Active);
 
@@ -79,6 +100,12 @@ public class ValidateDriverLicenseIntegrationTests : IAsyncLifetime
             Driver.Types.Regular,
             status,
             null);
+
+    private Task ChangeLicenseNumber(Driver driver, string newLicense)
+        => _app.DriverService.ChangeLicenseNumber(newLicense, driver.Id);
+
+    private Task ActivateDriver(Driver driver)
+        => _app.DriverService.ChangeDriverStatus(driver.Id, Driver.Statuses.Active);
 
     private Task<DriverDto> Load(Driver driver)
         => _app.DriverService.LoadDriver(driver.Id);
