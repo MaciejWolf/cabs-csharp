@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Integration\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Cabs\Cabs.csproj" />
   </ItemGroup>
 
