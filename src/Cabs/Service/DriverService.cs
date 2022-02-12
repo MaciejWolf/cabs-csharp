@@ -130,13 +130,17 @@ public class DriverService : IDriverService
             throw new ArgumentException("Driver does not exists, id = " + driverId);
 
         var yearMonth = new YearMonth(year, month);
+
         var from = yearMonth
-          .OnDayOfMonth(1).AtStartOfDayInZone(DateTimeZoneProviders.Bcl.GetSystemDefault())
-
+          .OnDayOfMonth(1)
+          .AtStartOfDayInZone(DateTimeZoneProviders.Bcl.GetSystemDefault())
           .ToInstant();
-        var to = yearMonth
 
-          .AtEndOfMonth().PlusDays(1).AtStartOfDayInZone(DateTimeZoneProviders.Bcl.GetSystemDefault()).ToInstant();
+        var to = yearMonth
+          .AtEndOfMonth()
+          .PlusDays(1)
+          .AtStartOfDayInZone(DateTimeZoneProviders.Bcl.GetSystemDefault())
+          .ToInstant();
 
         var transitsList = await _transitRepository.FindAllByDriverAndDateTimeBetween(driver, @from, to);
 
