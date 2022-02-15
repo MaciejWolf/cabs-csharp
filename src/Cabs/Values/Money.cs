@@ -23,4 +23,8 @@ public record Money
     public static Money operator +(Money money, Money other) => OfValue(money.IntValue + other.IntValue);
 
     public static Money operator -(Money money, Money other) => OfValue(money.IntValue - other.IntValue);
+
+    public static bool operator <(Money money, int other) => money.IntValue < other;
+
+    public static bool operator >(Money money, int other) => money.IntValue > other;
 }

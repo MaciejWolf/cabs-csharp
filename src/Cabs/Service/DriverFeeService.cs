@@ -1,5 +1,6 @@
 using LegacyFighter.Cabs.Entity;
 using LegacyFighter.Cabs.Repository;
+using LegacyFighter.Cabs.Values;
 
 namespace LegacyFighter.Cabs.Service;
 
@@ -14,7 +15,7 @@ public class DriverFeeService : IDriverFeeService
         _transitRepository = transitRepository;
     }
 
-    public async Task<int> CalculateDriverFee(long? transitId)
+    public async Task<Money> CalculateDriverFee(long? transitId)
     {
         var transit = await _transitRepository.Find(transitId);
         if (transit == null)
@@ -24,10 +25,10 @@ public class DriverFeeService : IDriverFeeService
 
         if (transit.DriversFee != null)
         {
-            return transit.DriversFee.Value;
+            return transit.DriversFee;
         }
 
-        var transitPrice = transit.Price.Value;
+        var transitPrice = transit.Price;
         var driverFee = await _driverFeeRepository.FindByDriver(transit.Driver);
         if (driverFee == null)
         {
@@ -35,17 +36,10 @@ public class DriverFeeService : IDriverFeeService
                                                transit.Driver.Id);
         }
 
-        int finalFee;
-        if (driverFee.FeeType == DriverFee.FeeTypes.Flat)
-        {
-            finalFee = transitPrice - driverFee.Amount;
-        }
-        else
-        {
-            finalFee = transitPrice * driverFee.Amount / 100;
+        var finalFee = driverFee.FeeType == DriverFee.FeeTypes.Flat
+            ? transitPrice - Money.OfValue(driverFee.Amount)
+            : transitPrice.Percentage(driverFee.Amount);
 
-        }
-
-        return Math.Max(finalFee, driverFee.Min == null ? 0 : driverFee.Min.Value);
+        return Money.OfValue(Math.Max(finalFee.IntValue, driverFee.Min == null ? 0 : driverFee.Min.Value));
     }
 }

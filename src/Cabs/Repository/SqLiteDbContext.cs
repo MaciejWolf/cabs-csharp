@@ -203,6 +203,18 @@ public class SqLiteDbContext : DbContext
             builder.HasOne(t => t.Driver).WithMany(d => d.Transits);
             builder.HasMany(t => t.ProposedDrivers).WithMany(d => d.ProposingTransits);
             builder.HasMany(t => t.DriversRejections).WithMany(d => d.RejectingTransits);
+            builder.OwnsOne(t => t.Price, builder =>
+            {
+                builder.Property(m => m.IntValue).HasColumnName(nameof(Transit.Price));
+            });
+            builder.OwnsOne(t => t.DriversFee, builder =>
+            {
+                builder.Property(t => t.IntValue).HasColumnName(nameof(Transit.DriversFee));
+            });
+            builder.OwnsOne(t => t.EstimatedPrice, builder =>
+            {
+                builder.Property(t => t.IntValue).HasColumnName(nameof(Transit.EstimatedPrice));
+            });
         });
     }
 }

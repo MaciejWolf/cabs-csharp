@@ -2,6 +2,7 @@
 using FluentAssertions;
 using LegacyFighter.Cabs.Entity;
 using LegacyFighter.Cabs.Service;
+using LegacyFighter.Cabs.Values;
 using NodaTime;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ public class CalculateDriverPeriodicPaymentIntegrationTests : IAsyncLifetime
 
         var payment = await CalculateDriverMonthlyPayment(driver, 2020, Month.October);
 
-        payment.Should().Be(505);
+        payment.Should().Be(Money.OfValue(505));
     }
 
     [Fact]
@@ -59,20 +60,20 @@ public class CalculateDriverPeriodicPaymentIntegrationTests : IAsyncLifetime
 
         var payments = await CalculateDriverYearlyPayment(driver, 2020);
 
-        payments[Month.January].Should().Be(69);
-        payments[Month.December].Should().Be(436);
+        payments[Month.January].Should().Be(Money.OfValue(69));
+        payments[Month.December].Should().Be(Money.OfValue(436));
 
         payments
             .ExceptBy(new[] { Month.January, Month.December }, kvp => kvp.Key)
             .Select(kvp => kvp.Value)
             .Should()
-            .OnlyContain(v => v == 0);
+            .OnlyContain(v => v == Money.Zero);
     }
 
-    private Task<int> CalculateDriverMonthlyPayment(Driver driver, int year, Month month) 
+    private Task<Money> CalculateDriverMonthlyPayment(Driver driver, int year, Month month) 
         => _app.DriverService.CalculateDriverMonthlyPayment(driver.Id, year, month.Value);
 
-    private Task<Dictionary<Month, int>> CalculateDriverYearlyPayment(Driver driver, int year)
+    private Task<Dictionary<Month, Money>> CalculateDriverYearlyPayment(Driver driver, int year)
         => _app.DriverService.CalculateDriverYearlyPayment(driver.Id, year);
 
     private Task<Driver> ADriver()
@@ -97,7 +98,7 @@ public class CalculateDriverPeriodicPaymentIntegrationTests : IAsyncLifetime
         => _app.TransitRepository.Save(new Transit
         {
             Driver = driver,
-            Price = price,
+            Price = Money.OfValue(price),
             DateTime = new LocalDate(year, month.Value, day)
             .AtStartOfDayInZone(DateTimeZoneProviders.Bcl.GetSystemDefault())
             .ToInstant()

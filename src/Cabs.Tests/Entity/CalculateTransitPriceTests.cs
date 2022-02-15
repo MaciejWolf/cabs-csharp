@@ -2,6 +2,7 @@
 using FluentAssertions;
 using FluentAssertions.Execution;
 using LegacyFighter.Cabs.Entity;
+using LegacyFighter.Cabs.Values;
 using NodaTime;
 using System.Threading.Tasks;
 using Xunit;
@@ -20,22 +21,22 @@ public class CalculateTransitPriceTests : IAsyncLifetime
     public void ShouldCalculatePrice()
     {
         using var _ = new AssertionScope();
-        ATransit(Transit.Statuses.Completed, Friday, 10).CalculateFinalCosts().Should().Be(1900);
-        ATransit(Transit.Statuses.Completed, Friday, 20).CalculateFinalCosts().Should().Be(2900);
-        ATransit(Transit.Statuses.Completed, Friday, 30).CalculateFinalCosts().Should().Be(3900);
-        ATransit(Transit.Statuses.Completed, Friday, 40).CalculateFinalCosts().Should().Be(4900);
-        ATransit(Transit.Statuses.Completed, Friday, 50).CalculateFinalCosts().Should().Be(5900);
+        ATransit(Transit.Statuses.Completed, Friday, 10).CalculateFinalCosts().Should().Be(Money.OfValue(1900));
+        ATransit(Transit.Statuses.Completed, Friday, 20).CalculateFinalCosts().Should().Be(Money.OfValue(2900));
+        ATransit(Transit.Statuses.Completed, Friday, 30).CalculateFinalCosts().Should().Be(Money.OfValue(3900));
+        ATransit(Transit.Statuses.Completed, Friday, 40).CalculateFinalCosts().Should().Be(Money.OfValue(4900));
+        ATransit(Transit.Statuses.Completed, Friday, 50).CalculateFinalCosts().Should().Be(Money.OfValue(5900));
     }
 
     [Fact]
     public void ShouldEstimatePrice()
     {
         using var _ = new AssertionScope();
-        ATransit(Transit.Statuses.Draft, Friday, 10).EstimateCost().Should().Be(1900);
-        ATransit(Transit.Statuses.Draft, Friday, 20).EstimateCost().Should().Be(2900);
-        ATransit(Transit.Statuses.Draft, Friday, 30).EstimateCost().Should().Be(3900);
-        ATransit(Transit.Statuses.Draft, Friday, 40).EstimateCost().Should().Be(4900);
-        ATransit(Transit.Statuses.Draft, Friday, 50).EstimateCost().Should().Be(5900);
+        ATransit(Transit.Statuses.Draft, Friday, 10).EstimateCost().Should().Be(Money.OfValue(1900));
+        ATransit(Transit.Statuses.Draft, Friday, 20).EstimateCost().Should().Be(Money.OfValue(2900));
+        ATransit(Transit.Statuses.Draft, Friday, 30).EstimateCost().Should().Be(Money.OfValue(3900));
+        ATransit(Transit.Statuses.Draft, Friday, 40).EstimateCost().Should().Be(Money.OfValue(4900));
+        ATransit(Transit.Statuses.Draft, Friday, 50).EstimateCost().Should().Be(Money.OfValue(5900));
     }
 
     private static Transit ATransit(Transit.Statuses status, Instant date, int km)

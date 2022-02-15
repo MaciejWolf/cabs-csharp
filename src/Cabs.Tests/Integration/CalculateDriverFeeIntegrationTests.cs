@@ -1,6 +1,7 @@
 ﻿using Cabs.Tests.Common;
 using FluentAssertions;
 using LegacyFighter.Cabs.Entity;
+using LegacyFighter.Cabs.Values;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -25,7 +26,7 @@ public class CalculateDriverFeeIntegrationTests : IAsyncLifetime
         var calculatedFee = await CalculateDriverFee(transit);
 
         // Assert
-        calculatedFee.Should().Be(50);
+        calculatedFee.Should().Be(Money.OfValue(50));
     }
 
     [Theory]
@@ -44,7 +45,7 @@ public class CalculateDriverFeeIntegrationTests : IAsyncLifetime
         var calculatedFee = await CalculateDriverFee(transit);
 
         // Assert
-        calculatedFee.Should().Be(expectedFee);
+        calculatedFee.Should().Be(Money.OfValue(expectedFee));
     }
 
     [Theory]
@@ -63,7 +64,7 @@ public class CalculateDriverFeeIntegrationTests : IAsyncLifetime
         var calculatedFee = await CalculateDriverFee(transit);
 
         // Assert
-        calculatedFee.Should().Be(expectedFee);
+        calculatedFee.Should().Be(Money.OfValue(expectedFee));
     }
 
     [Theory]
@@ -84,10 +85,10 @@ public class CalculateDriverFeeIntegrationTests : IAsyncLifetime
         var calculatedFee = await CalculateDriverFee(transit);
 
         // Assert
-        calculatedFee.Should().Be(expectedFee);
+        calculatedFee.Should().Be(Money.OfValue(expectedFee));
     }
 
-    private Task<int> CalculateDriverFee(Transit transit)
+    private Task<Money> CalculateDriverFee(Transit transit)
         => _app.DriverFeeService.CalculateDriverFee(transit.Id);
 
     private Task<Driver> ADriver() 
@@ -118,13 +119,13 @@ public class CalculateDriverFeeIntegrationTests : IAsyncLifetime
         => _app.TransitRepository.Save(new Transit
         {
             Driver = driver,
-            DriversFee = fee
+            DriversFee = Money.OfValue(fee)
         });
 
     private Task<Transit> TransitWithPrice(Driver driver, int price)
         => _app.TransitRepository.Save(new Transit 
         { 
             Driver = driver,
-            Price = price
+            Price = Money.OfValue(price)
         });
 }
