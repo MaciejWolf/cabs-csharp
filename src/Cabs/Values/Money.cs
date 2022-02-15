@@ -4,20 +4,23 @@ public record Money
 {
     public static Money Zero => new(0);
 
-    private readonly int _value;
-
-    public int IntValue => _value;
+    public int IntValue { get; }
 
     private Money(int value)
     {
-        _value = value;
+        IntValue = value;
+    }
+
+    protected Money()
+    {
+        // for EF
     }
 
     public static Money OfValue(int value) => new(value);
 
-    public Money Percentage(int percentage) => OfValue((int)Math.Round(percentage * _value / 100.0));
+    public Money Percentage(int percentage) => OfValue((int)Math.Round(percentage * IntValue / 100.0));
 
-    public static Money operator +(Money money, Money other) => new(money._value + other._value);
+    public static Money operator +(Money money, Money other) => OfValue(money.IntValue + other.IntValue);
 
-    public static Money operator -(Money money, Money other) => new(money._value - other._value);
+    public static Money operator -(Money money, Money other) => OfValue(money.IntValue - other.IntValue);
 }
