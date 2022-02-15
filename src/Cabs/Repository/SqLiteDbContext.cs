@@ -166,6 +166,10 @@ public class SqLiteDbContext : DbContext
             builder.MapBaseEntityProperties();
             builder.Property(f => f.FeeType).IsRequired();
             builder.Property(f => f.Amount).IsRequired();
+            builder.OwnsOne(f => f.Min, builder =>
+            {
+                builder.Property(m => m.IntValue).HasColumnName(nameof(DriverFee.Min));
+            });
         });
         modelBuilder.Entity<DriverPosition>(builder =>
         {

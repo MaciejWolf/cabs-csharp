@@ -111,7 +111,7 @@ public class CalculateDriverFeeIntegrationTests : IAsyncLifetime
         int amount,
         int min)
     {
-        var fee = new DriverFee(feeType, driver, amount, min);
+        var fee = new DriverFee(feeType, driver, amount, Money.OfValue(min));
         return _app.DriverFeeRepository.Save(fee);
     }
 

@@ -90,7 +90,7 @@ public class CalculateDriverPeriodicPaymentIntegrationTests : IAsyncLifetime
         DriverFee.FeeTypes feeType,
         int amount)
     {
-        var fee = new DriverFee(feeType, driver, amount, 0);
+        var fee = new DriverFee(feeType, driver, amount, Money.Zero);
         return _app.DriverFeeRepository.Save(fee);
     }
 

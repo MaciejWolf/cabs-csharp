@@ -40,6 +40,6 @@ public class DriverFeeService : IDriverFeeService
             ? transitPrice - Money.OfValue(driverFee.Amount)
             : transitPrice.Percentage(driverFee.Amount);
 
-        return Money.OfValue(Math.Max(finalFee.IntValue, driverFee.Min == null ? 0 : driverFee.Min.Value));
+        return Money.OfValue(Math.Max(finalFee.IntValue, driverFee.Min == null ? 0 : driverFee.Min.IntValue));
     }
 }
