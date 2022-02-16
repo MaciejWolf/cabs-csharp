@@ -30,6 +30,15 @@ public class DriverFee : BaseEntity
     public int Amount { get; set; }
     public Money Min { get; set; }
 
+    public Money Calculate(Money transitPrice)
+    {
+        var finalFee = FeeType == FeeTypes.Flat
+                    ? transitPrice - Money.OfValue(Amount)
+                    : transitPrice.Percentage(Amount);
+
+        return Money.OfValue(Math.Max(finalFee.IntValue, Min == null ? 0 : Min.IntValue));
+    }
+
     public override bool Equals(object obj)
     {
         if (ReferenceEquals(this, obj)) return true;

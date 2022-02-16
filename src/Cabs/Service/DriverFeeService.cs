@@ -36,10 +36,6 @@ public class DriverFeeService : IDriverFeeService
                                                transit.Driver.Id);
         }
 
-        var finalFee = driverFee.FeeType == DriverFee.FeeTypes.Flat
-            ? transitPrice - Money.OfValue(driverFee.Amount)
-            : transitPrice.Percentage(driverFee.Amount);
-
-        return Money.OfValue(Math.Max(finalFee.IntValue, driverFee.Min == null ? 0 : driverFee.Min.IntValue));
+        return driverFee.Calculate(transitPrice);
     }
 }
