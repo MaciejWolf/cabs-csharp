@@ -1,6 +1,6 @@
 using LegacyFighter.Cabs.Entity;
+using LegacyFighter.Cabs.Values;
 using NodaTime;
-using System.Globalization;
 
 namespace LegacyFighter.Cabs.Dto;
 
@@ -10,7 +10,7 @@ public class TransitDto
 
     public int? Factor;
 
-    private float _distance;
+    private Distance _distance;
 
     private string _distanceUnit;
 
@@ -26,7 +26,7 @@ public class TransitDto
     public TransitDto(Transit transit)
     {
         Id = transit.Id;
-        _distance = transit.Km;
+        _distance = Distance.OfKm(transit.Km);
         Factor = transit.Factor;
         if (transit.Price != null)
         {
@@ -144,36 +144,8 @@ public class TransitDto
 
     public string GetDistance(string unit)
     {
-        var usCulture = CultureInfo.CreateSpecificCulture("en-US");
         _distanceUnit = unit;
-        if (unit == "km")
-        {
-            if (_distance == Math.Ceiling(_distance))
-            {
-                return Math.Round(_distance).ToString(usCulture) + "km";
-
-            }
-
-            return _distance.ToString("0.000", usCulture) + "km";
-        }
-
-        if (unit == "miles")
-        {
-            var distance = _distance / 1.609344f;
-            if (distance == Math.Ceiling(distance))
-            {
-                return Math.Round(distance).ToString(usCulture) + "miles";
-            }
-
-            return distance.ToString("0.000", usCulture) + "miles";
-        }
-
-        if (unit == "m")
-        {
-            return Math.Round(_distance * 1000).ToString(usCulture) + "m";
-        }
-
-        throw new ArgumentException("Invalid unit " + unit);
+        return _distance.GetDistanceAs(unit);
     }
 
     public List<DriverDto> ProposedDrivers { get; set; } = new();

@@ -44,7 +44,7 @@ public class Transit : BaseEntity
     private Client.PaymentTypes? PaymentType { get; set; }
     public Instant? Date { get; private set; }
     public int? Factor { get; set; }
-    private float _km;
+    private Distance _distance;
     public const int BaseFee = 8;
 
     public CarType.CarClasses? CarType { get; set; }
@@ -143,7 +143,7 @@ public class Transit : BaseEntity
             }
         }
 
-        var pricedecimal = new decimal(_km * kmRate * factorToCalculate.Value + baseFee);
+        var pricedecimal = new decimal(_distance.Km * kmRate * factorToCalculate.Value + baseFee);
         pricedecimal = decimal.Round(pricedecimal, 2, MidpointRounding.ToPositiveInfinity);
         var finalPrice = int.Parse(pricedecimal.ToString("0.00", CultureInfo.InvariantCulture).Replace(".", ""));
         Price = Money.OfValue(finalPrice);
@@ -156,10 +156,10 @@ public class Transit : BaseEntity
 
     public float Km
     {
-        get => _km;
+        get => _distance.Km;
         set
         {
-            _km = value;
+            _distance = Distance.OfKm(value);
             EstimateCost();
         }
     }
