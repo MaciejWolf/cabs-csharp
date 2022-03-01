@@ -77,32 +77,4 @@ public class CalculateDriverPeriodicPaymentIntegrationTests : IAsyncLifetime
 
     private Task<Dictionary<Month, Money>> CalculateDriverYearlyPayment(Driver driver, int year)
         => _app.DriverService.CalculateDriverYearlyPayment(driver.Id, year);
-
-    //private Task<Driver> ADriver()
-    //    => _app.DriverService.CreateDriver(
-    //        "FARME100165AB5EW",
-    //        "Kowalski",
-    //        "Jan",
-    //        Driver.Types.Regular,
-    //        Driver.Statuses.Active,
-    //        "xxx");
-
-    //private Task<DriverFee> CreateDriverFee(
-    //    Driver driver,
-    //    DriverFee.FeeTypes feeType,
-    //    int amount)
-    //{
-    //    var fee = new DriverFee(feeType, driver, amount, Money.Zero);
-    //    return _app.DriverFeeRepository.Save(fee);
-    //}
-
-    //private Task<Transit> Transit(Driver driver, int price, int year, Month month, int day)
-    //    => _app.TransitRepository.Save(new Transit
-    //    {
-    //        Driver = driver,
-    //        Price = Money.OfValue(price),
-    //        DateTime = new LocalDate(year, month.Value, day)
-    //        .AtStartOfDayInZone(DateTimeZoneProviders.Bcl.GetSystemDefault())
-    //        .ToInstant()
-    //    });
 }
