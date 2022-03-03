@@ -58,21 +58,27 @@ public class Fixtures
             Driver = driver,
             Price = Money.OfValue(price),
             DateTime = new LocalDate(year, month.Value, day)
-            .AtStartOfDayInZone(DateTimeZoneProviders.Bcl.GetSystemDefault())
-            .ToInstant()
+                .AtStartOfDayInZone(DateTimeZoneProviders.Bcl.GetSystemDefault())
+                .ToInstant()
         });
 
     public Task<Transit> TransitWithFee(Driver driver, int fee)
         => transitRepository.Save(new Transit
         {
             Driver = driver,
-            DriversFee = Money.OfValue(fee)
+            DriversFee = Money.OfValue(fee),
+            DateTime = AnyDate
         });
 
     public Task<Transit> TransitWithPrice(Driver driver, int price)
         => transitRepository.Save(new Transit
         {
             Driver = driver,
-            Price = Money.OfValue(price)
+            Price = Money.OfValue(price),
+            DateTime = AnyDate
         });
+
+    private static Instant AnyDate => new LocalDate(2018, Month.January.Value, 1)
+                .AtStartOfDayInZone(DateTimeZoneProviders.Bcl.GetSystemDefault())
+                .ToInstant();
 }

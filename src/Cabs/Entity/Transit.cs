@@ -44,7 +44,7 @@ public class Transit : BaseEntity
     private Client.PaymentTypes? PaymentType { get; set; }
     public Instant? Date { get; private set; }
     public int? Factor { get; set; }
-    private Distance _distance;
+    private Distance _distance = Distance.OfKm(0);
     public const int BaseFee = 8;
 
     public CarType.CarClasses? CarType { get; set; }
