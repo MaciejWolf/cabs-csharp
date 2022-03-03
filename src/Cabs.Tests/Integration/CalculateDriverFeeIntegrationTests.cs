@@ -32,9 +32,9 @@ public class CalculateDriverFeeIntegrationTests : IAsyncLifetime
 
     [Theory]
     [InlineData(50, 90, 40)]
-    //[InlineData(30, 90, 60)]
-    //[InlineData(9, 100, 91)]
-    //[InlineData(100, 10, 0)]
+    [InlineData(30, 90, 60)]
+    [InlineData(9, 100, 91)]
+    [InlineData(100, 10, 0)]
     public async Task ShouldCalculateFlatFee(int driverFee, int transitPrice, int expectedFee)
     {
         // Arrange
