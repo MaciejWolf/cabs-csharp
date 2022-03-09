@@ -13,14 +13,14 @@ public class Fixtures
     private readonly ITransitRepository transitRepository;
     private readonly IDriverService driverService;
     private readonly IClientRepository clientRepository;
-    private readonly IAddressRepositoryInterface addressRepository;
+    private readonly AddressRepository addressRepository;
 
     public Fixtures(
         IDriverFeeRepository driverFeeRepository,
         ITransitRepository transitRepository,
         IDriverService driverService, 
-        IClientRepository clientRepository, 
-        IAddressRepositoryInterface addressRepository)
+        IClientRepository clientRepository,
+        AddressRepository addressRepository)
     {
         this.driverFeeRepository = driverFeeRepository;
         this.transitRepository = transitRepository;
@@ -75,26 +75,15 @@ public class Fixtures
                 .ToInstant()
         });
 
-    public async Task<Transit> ATransit(int price, Instant when)
+    public async Task<Transit> ATransit(int price, Instant when) 
+        => await transitRepository.Save(new Transit
     {
-        var t = new Transit() { Price = Money.OfValue(price) };
-        t.DateTime = when;
-        //t.To = await AnAddress("PL", "Warsaw", "Aleje Jerozolimskie", 96);
-        //t.From = await AnAddress("PL", "Warsaw", "Inna", 9);
-
-        t.To = await addressRepository.Save(new Address("Polska", "Warszawa", "Zytnia", 20));
-        t.From = await addressRepository.Save(new Address("Polska", "Warszawa", "M�ynarska", 20));
-
-        return await transitRepository.Save(t);
-
-        //return await transitRepository.Save(new Transit
-        //{
-        //    From = await AnAddress("PL", "Warsaw", "Aleje Jerozolimskie", 96),
-        //    To = await AnAddress("PL", "Warsaw", "Inna", 9),
-        //    Price = Money.OfValue(price),
-        //    DateTime = when
-        //});
-    }
+        Client = await AClient(),
+        From = await AnAddress("PL", "Warsaw", "Aleje Jerozolimskie", 96),
+        To = await AnAddress("PL", "Warsaw", "Inna", 9),
+        Price = Money.OfValue(price),
+        DateTime = when
+    });
 
     public Task<Transit> TransitWithFee(Driver driver, int fee)
         => transitRepository.Save(new Transit
