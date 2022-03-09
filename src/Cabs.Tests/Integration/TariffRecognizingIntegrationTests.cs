@@ -1,4 +1,5 @@
 ﻿using Cabs.Tests.Common;
+using Cabs.Tests.Common.TestData;
 using FluentAssertions;
 using LegacyFighter.Cabs.Service;
 using NodaTime;
@@ -47,38 +48,30 @@ public class TariffRecognizingIntegrationTests : IAsyncLifetime
     public static IEnumerable<object[]> DatesWithStandardTariff =>
         new List<object[]>
         {
-            new object[] { Friday },
-            new object[] { Before2019 }
+            new object[] { Dates.Friday },
+            new object[] { Dates.Before2019 }
         };
 
     public static IEnumerable<object[]> DatesWithWeekendPlusTariff =>
         new List<object[]>
         {
-            new object[] { FridayNight },
-            new object[] { SaturdayNight }
+            new object[] { Dates.FridayNight },
+            new object[] { Dates.SaturdayNight }
         };
 
     public static IEnumerable<object[]> DatesWithWeekendTariff =>
         new List<object[]>
         {
-            new object[] { Saturday },
-            new object[] { Sunday }
+            new object[] { Dates.Saturday },
+            new object[] { Dates.Sunday }
         };
 
     public static IEnumerable<object[]> DatesWithNewYearsEveTariff =>
         new List<object[]>
         {
-            new object[] { NewYearsEve }
+            new object[] { Dates.NewYearsEve }
         };
 
 
     private static Func<object[], object[]> HasTariff(string tariff) => x => new[] { x[0], tariff };
-
-    private static Instant Friday => new LocalDateTime(2021, 4, 16, 8, 30).InUtc().ToInstant();
-    private static Instant FridayNight => new LocalDateTime(2021, 4, 16, 19, 30).InUtc().ToInstant();
-    private static Instant Saturday => new LocalDateTime(2021, 4, 17, 8, 30).InUtc().ToInstant();
-    private static Instant SaturdayNight => new LocalDateTime(2021, 4, 17, 19, 30).InUtc().ToInstant();
-    private static Instant Sunday => new LocalDateTime(2021, 4, 18, 8, 30).InUtc().ToInstant();
-    private static Instant Before2019 => new LocalDateTime(2018, 1, 1, 8, 30).InUtc().ToInstant();
-    private static Instant NewYearsEve => new LocalDateTime(2021, 12, 31, 8, 30).InUtc().ToInstant();
 }
