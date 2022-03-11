@@ -30,6 +30,9 @@ namespace Cabs.Tests.Common.TestData
             new List<LocalDateTime>
             {
                 FridayNight,
+                Saturday.With(x => new LocalTime(5, 59)),
+                Saturday.With(x => new LocalTime(17, 00)),
+                Saturday.With(x => new LocalTime(17, 01)),
                 SaturdayNight
             };
 
@@ -37,6 +40,9 @@ namespace Cabs.Tests.Common.TestData
             new List<LocalDateTime>
             {
                 Saturday,
+                Saturday.With(x => new LocalTime(6, 00)),
+                Saturday.With(x => new LocalTime(6, 01)),
+                Saturday.With(x => new LocalTime(16, 59)),
                 Sunday
             };
 
