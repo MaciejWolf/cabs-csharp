@@ -18,15 +18,23 @@ public class CalculateTransitPriceTests : IAsyncLifetime
 
     public Task DisposeAsync() => _app.DisposeAsync().AsTask();
 
-    [Fact]
-    public void ShouldCalculatePrice()
+    [Theory]
+    [InlineData(10, 1900)]
+    [InlineData(20, 2900)]
+    [InlineData(30, 3900)]
+    [InlineData(40, 4900)]
+    [InlineData(50, 5900)]
+    public void ShouldCalculatePrice(int km, int expectedCost)
     {
-        using var _ = new AssertionScope();
-        ATransit(Transit.Statuses.Completed, Dates.Friday, 10).CalculateFinalCosts().Should().Be(Money.OfValue(1900));
-        ATransit(Transit.Statuses.Completed, Dates.Friday, 20).CalculateFinalCosts().Should().Be(Money.OfValue(2900));
-        ATransit(Transit.Statuses.Completed, Dates.Friday, 30).CalculateFinalCosts().Should().Be(Money.OfValue(3900));
-        ATransit(Transit.Statuses.Completed, Dates.Friday, 40).CalculateFinalCosts().Should().Be(Money.OfValue(4900));
-        ATransit(Transit.Statuses.Completed, Dates.Friday, 50).CalculateFinalCosts().Should().Be(Money.OfValue(5900));
+        // Arrange
+        var transit = ATransit(Transit.Statuses.Completed, Dates.Friday, km);
+
+        // Act
+        var cost = transit.CalculateFinalCosts();
+
+        // Assert
+        cost.Should().Be(Money.OfValue(expectedCost));
+        transit.Price.Should().Be(Money.OfValue(expectedCost));
     }
 
     [Fact]
