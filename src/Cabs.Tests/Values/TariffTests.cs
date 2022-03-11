@@ -21,19 +21,22 @@ public class TariffTests
         tariff.KmRate.Should().Be(expectedKmRate);
     }
 
-    [Fact]
-    public void ShouldEstimatePrice()
+    public static IEnumerable<object[]> DatesWithStandardTariff => Dates.WithStandardTariff.Select(x => new object[] { x });
+
+    [Theory]
+    [MemberData(nameof(DatesWithStandardTariff))]
+    public void ShouldCalculateWithStandardTariff(LocalDateTime date)
     {
         using var _ = new AssertionScope();
-        Tariff.Create(Dates.Friday).CalculateCost(Distance.OfKm(10)).Should().Be(Money.OfValue(1900));
-        Tariff.Create(Dates.Friday).CalculateCost(Distance.OfKm(20)).Should().Be(Money.OfValue(2900));
-        Tariff.Create(Dates.Friday).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(3900));
-        Tariff.Create(Dates.Friday).CalculateCost(Distance.OfKm(40)).Should().Be(Money.OfValue(4900));
-        Tariff.Create(Dates.Friday).CalculateCost(Distance.OfKm(50)).Should().Be(Money.OfValue(5900));
+        Tariff.Create(date).CalculateCost(Distance.OfKm(10)).Should().Be(Money.OfValue(1900));
+        Tariff.Create(date).CalculateCost(Distance.OfKm(20)).Should().Be(Money.OfValue(2900));
+        Tariff.Create(date).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(3900));
+        Tariff.Create(date).CalculateCost(Distance.OfKm(40)).Should().Be(Money.OfValue(4900));
+        Tariff.Create(date).CalculateCost(Distance.OfKm(50)).Should().Be(Money.OfValue(5900));
     }
 
     [Fact]
-    public void ShouldCalculatePriceForSaturday()
+    public void ShouldCalculatePriceWithWeekendTariff()
     {
         using var _ = new AssertionScope();
         Tariff.Create(Dates.Saturday).CalculateCost(Distance.OfKm(10)).Should().Be(Money.OfValue(2300));
@@ -43,30 +46,17 @@ public class TariffTests
         Tariff.Create(Dates.Saturday).CalculateCost(Distance.OfKm(50)).Should().Be(Money.OfValue(8300));
     }
 
-    [Fact]
-    public void ShouldCalculatePriceForSaturdayNight()
-    {
-        using var _ = new AssertionScope();
-        Tariff.Create(Dates.SaturdayNight).CalculateCost(Distance.OfKm(10)).Should().Be(Money.OfValue(3500));
-        Tariff.Create(Dates.SaturdayNight).CalculateCost(Distance.OfKm(20)).Should().Be(Money.OfValue(6000));
-        Tariff.Create(Dates.SaturdayNight).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(8500));
-        Tariff.Create(Dates.SaturdayNight).CalculateCost(Distance.OfKm(40)).Should().Be(Money.OfValue(11000));
-        Tariff.Create(Dates.SaturdayNight).CalculateCost(Distance.OfKm(50)).Should().Be(Money.OfValue(13500));
-    }
+    [Theory]
+    [InlineData(10, 3500)]
+    [InlineData(20, 6000)]
+    [InlineData(30, 8500)]
+    [InlineData(40, 11000)]
+    [InlineData(50, 13500)]
+    public void ShouldCalculatePriceWithWeekendPlusTariff(float km, int cost) 
+        => Tariff.Create(Dates.WithWeekendPlusTariff.First()).CalculateCost(Distance.OfKm(km)).Should().Be(Money.OfValue(cost));
 
     [Fact]
-    public void ShouldCalculatePriceForSunday()
-    {
-        using var _ = new AssertionScope();
-        Tariff.Create(Dates.Sunday).CalculateCost(Distance.OfKm(10)).Should().Be(Money.OfValue(2300));
-        Tariff.Create(Dates.Sunday).CalculateCost(Distance.OfKm(20)).Should().Be(Money.OfValue(3800));
-        Tariff.Create(Dates.Sunday).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(5300));
-        Tariff.Create(Dates.Sunday).CalculateCost(Distance.OfKm(40)).Should().Be(Money.OfValue(6800));
-        Tariff.Create(Dates.Sunday).CalculateCost(Distance.OfKm(50)).Should().Be(Money.OfValue(8300));
-    }
-
-    [Fact]
-    public void ShouldCalculatePriceForNewYearsEve()
+    public void ShouldCalculatePriceWithNewYearsEveTariff()
     {
         using var _ = new AssertionScope();
         Tariff.Create(Dates.NewYearsEve).CalculateCost(Distance.OfKm(10)).Should().Be(Money.OfValue(4600));
@@ -74,17 +64,6 @@ public class TariffTests
         Tariff.Create(Dates.NewYearsEve).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(11600));
         Tariff.Create(Dates.NewYearsEve).CalculateCost(Distance.OfKm(40)).Should().Be(Money.OfValue(15100));
         Tariff.Create(Dates.NewYearsEve).CalculateCost(Distance.OfKm(50)).Should().Be(Money.OfValue(18600));
-    }
-
-    [Fact]
-    public void ShouldCalculateUsingStandardPriceBefore2019()
-    {
-        using var _ = new AssertionScope();
-        Tariff.Create(Dates.Before2019).CalculateCost(Distance.OfKm(10)).Should().Be(Money.OfValue(1900));
-        Tariff.Create(Dates.Before2019).CalculateCost(Distance.OfKm(20)).Should().Be(Money.OfValue(2900));
-        Tariff.Create(Dates.Before2019).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(3900));
-        Tariff.Create(Dates.Before2019).CalculateCost(Distance.OfKm(40)).Should().Be(Money.OfValue(4900));
-        Tariff.Create(Dates.Before2019).CalculateCost(Distance.OfKm(50)).Should().Be(Money.OfValue(5900));
     }
 
     [Fact]
