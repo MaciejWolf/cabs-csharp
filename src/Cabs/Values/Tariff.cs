@@ -1,23 +1,45 @@
 ﻿using NodaTime;
+using System.Globalization;
 
 namespace LegacyFighter.Cabs.Values;
 
 public record Tariff
 {
+    private const int BaseFee = 8;
+
     public string Name { get; }
     public float KmRate { get; }
 
-    private Tariff(string name, float kmRate)
+    private readonly int _baseFee;
+
+    private Tariff(string name, float kmRate, int baseFee)
     {
         Name = name;
         KmRate = kmRate;
+        _baseFee = baseFee;
     }
 
     public static Tariff Create(LocalDateTime date)
     {
         var (name, kmRate) = GetTariff(date);
+        var baseFee = CalculateBaseFee(date);
 
-        return new Tariff(name, kmRate);
+        return new Tariff(name, kmRate, baseFee);
+    }
+
+    public Money CalculateCost(Distance distance)
+    {
+        int? factorToCalculate = 1;
+        //var factorToCalculate = Factor;
+        //if (factorToCalculate == null)
+        //{
+        //    factorToCalculate = 1;
+        //}
+ 
+        var pricedecimal = new decimal(distance.Km * KmRate * factorToCalculate.Value + _baseFee);
+        pricedecimal = decimal.Round(pricedecimal, 2, MidpointRounding.ToPositiveInfinity);
+        var finalPrice = int.Parse(pricedecimal.ToString("0.00", CultureInfo.InvariantCulture).Replace(".", ""));
+        return Money.OfValue(finalPrice);
     }
 
     private static (string Name, float KmRate) Standard => ("Standard", 1.0f);
@@ -82,6 +104,50 @@ public record Tariff
                     return (default, default);
             }
         }
+    }
 
+    private static int CalculateBaseFee(LocalDateTime day)
+    {
+        var baseFee = BaseFee;
+
+        if (day.Year <= 2018)
+        {
+            baseFee++;
+        }
+        else
+        {
+            if ((day.Month == 12 && day.Day == 31) ||
+                (day.Month == 1 && day.Day == 1 && day.Hour <= 6))
+            {
+                baseFee += 3;
+            }
+            else
+            {
+                // piątek i sobota po 17 do 6 następnego dnia
+                if ((day.DayOfWeek == IsoDayOfWeek.Friday && day.Hour >= 17) ||
+                    (day.DayOfWeek == IsoDayOfWeek.Saturday && day.Hour <= 6) ||
+                    (day.DayOfWeek == IsoDayOfWeek.Saturday && day.Hour >= 17) ||
+                    (day.DayOfWeek == IsoDayOfWeek.Sunday && day.Hour <= 6))
+                {
+                    baseFee += 2;
+                }
+                else
+                {
+                    // pozostałe godziny weekendu
+                    if ((day.DayOfWeek == IsoDayOfWeek.Saturday && day.Hour > 6 && day.Hour < 17) ||
+                        (day.DayOfWeek == IsoDayOfWeek.Sunday && day.Hour > 6))
+                    {
+
+                    }
+                    else
+                    {
+                        // tydzień roboczy
+                        baseFee++;
+                    }
+                }
+            }
+        }
+
+        return baseFee;
     }
 }
