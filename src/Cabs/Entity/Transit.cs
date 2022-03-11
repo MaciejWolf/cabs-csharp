@@ -56,6 +56,10 @@ public class Transit : BaseEntity
         set; //just for testing
     }
 
+    private LocalDateTime CurrentDate => DateTime.Value.InZone(DateTimeZoneProviders.Bcl.GetSystemDefault()).LocalDateTime;
+
+    public Tariff Tariff => Tariff.Create(CurrentDate, Factor);
+
     public Statuses? Status { get; set; }
 
     public Instant? CompleteAt { get; private set; }
@@ -67,12 +71,10 @@ public class Transit : BaseEntity
             throw new InvalidOperationException("Estimating cost for completed transit is forbidden, id = " + Id);
         }
 
-        var estimated = CalculateCost();
-
-        EstimatedPrice = estimated;
+        EstimatedPrice = Tariff.CalculateCost(_distance);
         Price = null;
 
-        return estimated;
+        return EstimatedPrice;
     }
 
     public virtual Client Client { get; set; }
@@ -81,73 +83,13 @@ public class Transit : BaseEntity
     {
         if (Status == Statuses.Completed)
         {
-            return CalculateCost();
+            Price = Tariff.CalculateCost(_distance);
+            return Price;
         }
         else
         {
             throw new InvalidOperationException("Cannot calculate final cost if the transit is not completed");
         }
-    }
-
-    private Money CalculateCost()
-    {
-        var baseFee = BaseFee;
-        var factorToCalculate = Factor;
-        if (factorToCalculate == null)
-        {
-            factorToCalculate = 1;
-        }
-
-        float kmRate;
-        var day = DateTime.Value.InZone(DateTimeZoneProviders.Bcl.GetSystemDefault()).LocalDateTime;
-        // wprowadzenie nowych cennikow od 1.01.2019
-        if (day.Year <= 2018)
-        {
-            kmRate = 1.0f;
-            baseFee++;
-        }
-        else
-        {
-            if ((day.Month == 12 && day.Day == 31) ||
-                (day.Month == 1 && day.Day == 1 && day.Hour <= 6))
-            {
-                kmRate = 3.50f;
-                baseFee += 3;
-            }
-            else
-            {
-                // piątek i sobota po 17 do 6 następnego dnia
-                if ((day.DayOfWeek == IsoDayOfWeek.Friday && day.Hour >= 17) ||
-                    (day.DayOfWeek == IsoDayOfWeek.Saturday && day.Hour <= 6) ||
-                    (day.DayOfWeek == IsoDayOfWeek.Saturday && day.Hour >= 17) ||
-                    (day.DayOfWeek == IsoDayOfWeek.Sunday && day.Hour <= 6))
-                {
-                    kmRate = 2.50f;
-                    baseFee += 2;
-                }
-                else
-                {
-                    // pozostałe godziny weekendu
-                    if ((day.DayOfWeek == IsoDayOfWeek.Saturday && day.Hour > 6 && day.Hour < 17) ||
-                        (day.DayOfWeek == IsoDayOfWeek.Sunday && day.Hour > 6))
-                    {
-                        kmRate = 1.5f;
-                    }
-                    else
-                    {
-                        // tydzień roboczy
-                        kmRate = 1.0f;
-                        baseFee++;
-                    }
-                }
-            }
-        }
-
-        var pricedecimal = new decimal(_distance.Km * kmRate * factorToCalculate.Value + baseFee);
-        pricedecimal = decimal.Round(pricedecimal, 2, MidpointRounding.ToPositiveInfinity);
-        var finalPrice = int.Parse(pricedecimal.ToString("0.00", CultureInfo.InvariantCulture).Replace(".", ""));
-        Price = Money.OfValue(finalPrice);
-        return Price;
     }
 
     public Instant? DateTime { set; get; }
