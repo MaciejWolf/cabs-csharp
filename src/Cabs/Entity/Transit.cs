@@ -45,7 +45,6 @@ public class Transit : BaseEntity
     public Instant? Date { get; private set; }
     public int? Factor { get; set; }
     private Distance _distance = Distance.OfKm(0);
-    public const int BaseFee = 8;
 
     public CarType.CarClasses? CarType { get; set; }
     public virtual Driver Driver { get; set; }
