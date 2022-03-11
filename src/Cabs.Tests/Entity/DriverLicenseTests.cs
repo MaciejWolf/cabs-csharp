@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using LegacyFighter.Cabs.Entity;
+using LegacyFighter.Cabs.Values;
 using System;
 using Xunit;
 

@@ -37,41 +37,13 @@ public class TariffRecognizingIntegrationTests : IAsyncLifetime
 
     public static IEnumerable<object[]> DatesAndTariffs()
     {
-        var standard = DatesWithStandardTariff.Select(HasTariff("Standard"));
-        var weekend = DatesWithWeekendTariff.Select(HasTariff("Weekend"));
-        var weekendPlus = DatesWithWeekendPlusTariff.Select(HasTariff("Weekend+"));
-        var newYearsEve = DatesWithNewYearsEveTariff.Select(HasTariff("Sylwester"));
+        var standard = Dates.WithStandardTariff.Select(HasTariffName("Standard"));
+        var weekend = Dates.WithWeekendTariff.Select(HasTariffName("Weekend"));
+        var weekendPlus = Dates.WithWeekendPlusTariff.Select(HasTariffName("Weekend+"));
+        var newYearsEve = Dates.WithNewYearsEveTariff.Select(HasTariffName("Sylwester"));
 
         return standard.Concat(weekend).Concat(weekendPlus).Concat(newYearsEve);
     }
 
-    public static IEnumerable<object[]> DatesWithStandardTariff =>
-        new List<object[]>
-        {
-            new object[] { Dates.Friday },
-            new object[] { Dates.Before2019 }
-        };
-
-    public static IEnumerable<object[]> DatesWithWeekendPlusTariff =>
-        new List<object[]>
-        {
-            new object[] { Dates.FridayNight },
-            new object[] { Dates.SaturdayNight }
-        };
-
-    public static IEnumerable<object[]> DatesWithWeekendTariff =>
-        new List<object[]>
-        {
-            new object[] { Dates.Saturday },
-            new object[] { Dates.Sunday }
-        };
-
-    public static IEnumerable<object[]> DatesWithNewYearsEveTariff =>
-        new List<object[]>
-        {
-            new object[] { Dates.NewYearsEve }
-        };
-
-
-    private static Func<object[], object[]> HasTariff(string tariff) => x => new[] { x[0], tariff };
+    public static Func<Instant, object[]> HasTariffName(string tariff) => date => new object[] { date, tariff };
 }

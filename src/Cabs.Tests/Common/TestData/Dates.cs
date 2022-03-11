@@ -1,4 +1,5 @@
 ﻿using NodaTime;
+using System.Collections.Generic;
 
 namespace Cabs.Tests.Common.TestData
 {
@@ -17,5 +18,32 @@ namespace Cabs.Tests.Common.TestData
         public static Instant Before2019 => new LocalDateTime(2018, 1, 1, 8, 30).InUtc().ToInstant();
 
         public static Instant NewYearsEve => new LocalDateTime(2021, 12, 31, 8, 30).InUtc().ToInstant();
+
+        public static IEnumerable<Instant> WithStandardTariff =>
+        new List<Instant>
+        {
+            Friday,
+            Before2019
+        };
+
+        public static IEnumerable<Instant> WithWeekendPlusTariff =>
+            new List<Instant>
+            {
+                FridayNight,
+                SaturdayNight
+            };
+
+        public static IEnumerable<Instant> WithWeekendTariff =>
+            new List<Instant>
+            {
+                Saturday,
+                Sunday
+            };
+
+        public static IEnumerable<Instant> WithNewYearsEveTariff =>
+            new List<Instant>
+            {
+                NewYearsEve
+            };
     }
 }

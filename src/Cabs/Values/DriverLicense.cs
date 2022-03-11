@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace LegacyFighter.Cabs.Entity;
+namespace LegacyFighter.Cabs.Values;
 
 public record DriverLicense
 {
@@ -28,6 +28,6 @@ public record DriverLicense
 
     public static DriverLicense WithoutValidation(string driverLicense) => new(driverLicense);
 
-    private static bool IsValid(string license) 
+    private static bool IsValid(string license)
         => license is not null && license.Any() && Regex.IsMatch(license, DriverLicenseRegex);
 }

@@ -1,4 +1,5 @@
 using LegacyFighter.Cabs.Common;
+using LegacyFighter.Cabs.Values;
 
 namespace LegacyFighter.Cabs.Entity;
 
