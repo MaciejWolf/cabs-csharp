@@ -95,12 +95,36 @@ public class CalculateTransitPriceTests : IAsyncLifetime
         ATransit(Transit.Statuses.Draft, Dates.Before2019, 50).EstimateCost().Should().Be(Money.OfValue(5900));
     }
 
+    [Fact]
+    public void ShouldCalculateWithFactor()
+    {
+        using var _ = new AssertionScope();
+        ATransit(Transit.Statuses.Draft, Dates.Before2019, 30, 0).EstimateCost().Should().Be(Money.OfValue(900));
+        ATransit(Transit.Statuses.Draft, Dates.Before2019, 30, 1).EstimateCost().Should().Be(Money.OfValue(3900));
+        ATransit(Transit.Statuses.Draft, Dates.Before2019, 30, 2).EstimateCost().Should().Be(Money.OfValue(6900));
+        ATransit(Transit.Statuses.Draft, Dates.Before2019, 30, 3).EstimateCost().Should().Be(Money.OfValue(9900));
+        ATransit(Transit.Statuses.Draft, Dates.Before2019, 30, 4).EstimateCost().Should().Be(Money.OfValue(12900)); 
+    }
+
     private static Transit ATransit(Transit.Statuses status, LocalDateTime date, int km)
     {
         var transit = new Transit
         {
             DateTime = date.InUtc().ToInstant(),
             Status = Transit.Statuses.Draft,
+            Km = km
+        };
+        transit.Status = status;
+        return transit;
+    }
+
+    private static Transit ATransit(Transit.Statuses status, LocalDateTime date, int km, int factor)
+    {
+        var transit = new Transit
+        {
+            DateTime = date.InUtc().ToInstant(),
+            Status = Transit.Statuses.Draft,
+            Factor = factor,
             Km = km
         };
         transit.Status = status;
