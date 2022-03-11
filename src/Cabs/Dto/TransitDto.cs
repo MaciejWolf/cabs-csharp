@@ -65,12 +65,6 @@ public class TransitDto
 
     public float KmRate { get; private set; }
 
-    private void SetTariff(Transit transit)
-    {
-        Tariff = transit.Tariff.Name;
-        KmRate = transit.Tariff.KmRate;
-    }
-
     public string Tariff { get; private set; }
 
     public string GetDistance(string unit)
