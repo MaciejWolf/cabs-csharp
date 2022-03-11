@@ -95,11 +95,11 @@ public class CalculateTransitPriceTests : IAsyncLifetime
         ATransit(Transit.Statuses.Draft, Dates.Before2019, 50).EstimateCost().Should().Be(Money.OfValue(5900));
     }
 
-    private static Transit ATransit(Transit.Statuses status, Instant date, int km)
+    private static Transit ATransit(Transit.Statuses status, LocalDateTime date, int km)
     {
         var transit = new Transit
         {
-            DateTime = date,
+            DateTime = date.InUtc().ToInstant(),
             Status = Transit.Statuses.Draft,
             Km = km
         };

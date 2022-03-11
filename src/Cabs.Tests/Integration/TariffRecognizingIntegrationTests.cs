@@ -23,7 +23,7 @@ public class TariffRecognizingIntegrationTests : IAsyncLifetime
 
     [Theory]
     [MemberData(nameof(DatesAndTariffs))]
-    public async Task ShouldDisplayValidTariff(Instant date, string expectedTariff)
+    public async Task ShouldDisplayValidTariff(LocalDateTime date, string expectedTariff)
     {
         // Arrange
         var transit = await Fixtures.ATransit(60, date);
@@ -45,5 +45,5 @@ public class TariffRecognizingIntegrationTests : IAsyncLifetime
         return standard.Concat(weekend).Concat(weekendPlus).Concat(newYearsEve);
     }
 
-    public static Func<Instant, object[]> HasTariffName(string tariff) => date => new object[] { date, tariff };
+    public static Func<LocalDateTime, object[]> HasTariffName(string tariff) => date => new object[] { date, tariff };
 }

@@ -75,14 +75,14 @@ public class Fixtures
                 .ToInstant()
         });
 
-    public async Task<Transit> ATransit(int price, Instant when) 
+    public async Task<Transit> ATransit(int price, LocalDateTime when) 
         => await transitRepository.Save(new Transit
     {
         Client = await AClient(),
         From = await AnAddress("PL", "Warsaw", "Aleje Jerozolimskie", 96),
         To = await AnAddress("PL", "Warsaw", "Inna", 9),
         Price = Money.OfValue(price),
-        DateTime = when
+        DateTime = when.InUtc().ToInstant()
     });
 
     public Task<Transit> TransitWithFee(Driver driver, int fee)
