@@ -7,10 +7,26 @@ namespace LegacyFighter.Cabs.Entity;
 
 public class Transit : BaseEntity
 {
-
-
     public Transit()
     {
+    }
+
+    public Transit(
+        Client client,
+        Address from,
+        Address to,
+        CarType.CarClasses? carClass,
+        Instant dateTime,
+        Distance distance)
+    {
+        Client = client;
+        From = from;
+        To = to;
+        CarType = carClass;
+        DateTime = dateTime;
+        Status = Statuses.Draft;
+        _distance = distance;
+        EstimateCost();
     }
 
     public enum Statuses

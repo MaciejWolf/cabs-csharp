@@ -1,6 +1,7 @@
 using LegacyFighter.Cabs.Dto;
 using LegacyFighter.Cabs.Entity;
 using LegacyFighter.Cabs.Repository;
+using LegacyFighter.Cabs.Values;
 using NodaTime;
 
 namespace LegacyFighter.Cabs.Service;
@@ -77,21 +78,25 @@ public class TransitService : ITransitService
             throw new ArgumentException("Client does not exist, id = " + clientId);
         }
 
-        var transit = new Transit();
+        var transit = new Transit(
+            client,
+            from,
+            to,
+            carClass,
+            _clock.GetCurrentInstant(),
+            CalculateDistance(from, to));
 
-        // TODO FIXME later: add some exceptions handling
+        return await _transitRepository.Save(transit);
+    }
+
+    private Distance CalculateDistance(Address from, Address to)
+    {
         var geoFrom = _geocodingService.GeocodeAddress(from);
         var geoTo = _geocodingService.GeocodeAddress(to);
 
-        transit.Client = client;
-        transit.From = @from;
-        transit.To = to;
-        transit.CarType = carClass;
-        transit.Status = Transit.Statuses.Draft;
-        transit.DateTime = _clock.GetCurrentInstant();
-        transit.Km = (float)_distanceCalculator.CalculateByMap(geoFrom[0], geoFrom[1], geoTo[0], geoTo[1]);
+        var km = (float)_distanceCalculator.CalculateByMap(geoFrom[0], geoFrom[1], geoTo[0], geoTo[1]);
 
-        return await _transitRepository.Save(transit);
+        return Distance.OfKm(km);
     }
 
     public async Task ChangeTransitAddressFrom(long? transitId, Address newAddress)
