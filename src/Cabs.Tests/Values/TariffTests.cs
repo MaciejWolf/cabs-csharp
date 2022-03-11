@@ -87,6 +87,17 @@ public class TariffTests
         Tariff.Create(Dates.Before2019).CalculateCost(Distance.OfKm(50)).Should().Be(Money.OfValue(5900));
     }
 
+    [Fact]
+    public void ShouldCalculateWithFactor()
+    {
+        using var _ = new AssertionScope();
+        Tariff.Create(Dates.Before2019, 0).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(900));
+        Tariff.Create(Dates.Before2019, 1).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(3900));
+        Tariff.Create(Dates.Before2019, 2).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(6900));
+        Tariff.Create(Dates.Before2019, 3).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(9900));
+        Tariff.Create(Dates.Before2019, 4).CalculateCost(Distance.OfKm(30)).Should().Be(Money.OfValue(12900));
+    }
+
     public static IEnumerable<object[]> DatesWithTariffs()
     {
         var standard = Dates.WithStandardTariff.Select(HasTariffAndKmRate("Standard", 1.0f));

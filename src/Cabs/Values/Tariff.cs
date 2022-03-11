@@ -11,32 +11,27 @@ public record Tariff
     public float KmRate { get; }
 
     private readonly int _baseFee;
+    private readonly int _factor;
 
-    private Tariff(string name, float kmRate, int baseFee)
+    private Tariff(string name, float kmRate, int baseFee, int factor)
     {
         Name = name;
         KmRate = kmRate;
         _baseFee = baseFee;
+        _factor = factor;
     }
 
-    public static Tariff Create(LocalDateTime date)
+    public static Tariff Create(LocalDateTime date, int? factor = null)
     {
         var (name, kmRate) = GetTariff(date);
         var baseFee = CalculateBaseFee(date);
 
-        return new Tariff(name, kmRate, baseFee);
+        return new Tariff(name, kmRate, baseFee, factor ?? 1);
     }
 
     public Money CalculateCost(Distance distance)
-    {
-        int? factorToCalculate = 1;
-        //var factorToCalculate = Factor;
-        //if (factorToCalculate == null)
-        //{
-        //    factorToCalculate = 1;
-        //}
- 
-        var pricedecimal = new decimal(distance.Km * KmRate * factorToCalculate.Value + _baseFee);
+    { 
+        var pricedecimal = new decimal(distance.Km * KmRate * _factor + _baseFee);
         pricedecimal = decimal.Round(pricedecimal, 2, MidpointRounding.ToPositiveInfinity);
         var finalPrice = int.Parse(pricedecimal.ToString("0.00", CultureInfo.InvariantCulture).Replace(".", ""));
         return Money.OfValue(finalPrice);
