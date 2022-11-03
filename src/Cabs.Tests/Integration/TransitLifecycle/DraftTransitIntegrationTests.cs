@@ -17,15 +17,10 @@ namespace Cabs.Tests.Integration.TransitLifecycle;
 public class DraftTransitIntegrationTests : IAsyncLifetime
 {
     private readonly CabsApp _app;
-
     private ITransitService TransitService => _app.TransitService;
-    
     private IDriverSessionService DriverSessionService => _app.DriverSessionService;
-
     private IDriverTrackingService DriverTrackingService => _app.DriverTrackingService;
-
     private Fixtures Fixtures => _app.Fixtures;
-
     private Mock<IGeocodingService> _geocodingService;
     private Mock<IClock> _clock; 
 
