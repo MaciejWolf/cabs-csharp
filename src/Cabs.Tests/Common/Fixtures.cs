@@ -1,14 +1,17 @@
-﻿using LegacyFighter.Cabs.Entity;
+﻿using System.Linq;
+using LegacyFighter.Cabs.Entity;
 using LegacyFighter.Cabs.Repository;
 using LegacyFighter.Cabs.Service;
 using LegacyFighter.Cabs.Values;
 using NodaTime;
 using System.Threading.Tasks;
+using LegacyFighter.Cabs.Dto;
 
 namespace Cabs.Tests.Common;
 
 public class Fixtures
 {
+    private readonly ICarTypeService carTypeService;
     private readonly IDriverFeeRepository driverFeeRepository;
     private readonly ITransitRepository transitRepository;
     private readonly IDriverService driverService;
@@ -17,12 +20,14 @@ public class Fixtures
 
     public Fixtures(
         IDriverFeeRepository driverFeeRepository,
+        ICarTypeService carTypeService,
         ITransitRepository transitRepository,
         IDriverService driverService, 
         IClientRepository clientRepository,
         AddressRepository addressRepository)
     {
         this.driverFeeRepository = driverFeeRepository;
+        this.carTypeService = carTypeService;
         this.transitRepository = transitRepository;
         this.driverService = driverService;
         this.clientRepository = clientRepository;
@@ -45,6 +50,22 @@ public class Fixtures
             Driver.Statuses.Active,
             "xxx");
 
+    public async Task<CarType> AnActiveCarCategory(CarType.CarClasses carClass)
+    {
+        var carTypeDto = new CarTypeDto
+        {
+            CarClass = carClass,
+            Description = "opis"
+        };
+        var carType = await carTypeService.Create(carTypeDto);
+        foreach (var _ in Enumerable.Range(1, carType.MinNoOfCarsToActivateClass))
+        {
+            await carTypeService.RegisterCar(carType.CarClass);
+        }
+        await carTypeService.Activate(carType.Id);
+        return carType;
+    }
+    
     public Task<DriverFee> DriverHasFee(
         Driver driver,
         DriverFee.FeeTypes feeType,

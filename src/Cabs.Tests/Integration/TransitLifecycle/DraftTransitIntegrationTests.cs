@@ -35,7 +35,7 @@ public class DraftTransitIntegrationTests : IAsyncLifetime
     {
         _geocodingService = SetupGeocodingServiceMock();
         _clock = SetupClockMock();
-
+        
         _app = CabsApp.CreateInstance(services =>
         {
             services.AddSingleton(_geocodingService.Object);
@@ -62,6 +62,7 @@ public class DraftTransitIntegrationTests : IAsyncLifetime
     public async Task InitializeAsync()
     {
         _client = await Fixtures.AClient();
+        await Fixtures.AnActiveCarCategory(CarType.CarClasses.Van);
     }
 
     public Task DisposeAsync() => _app.DisposeAsync().AsTask();
@@ -97,7 +98,7 @@ public class DraftTransitIntegrationTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task CanChangePickupAddressThreeTimes()
+    public async Task CannotChangePickupAddressThreeTimes()
     {
         // Arrange
         var addresses = await GenerateAddresses(3);
@@ -165,7 +166,7 @@ public class DraftTransitIntegrationTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task Xx()
+    public async Task CanPublishTransit()
     {
         // Arrange
         await CreateTransit();
