@@ -51,4 +51,10 @@ internal class CabsApp : WebApplicationFactory<Program>
 
     public ITransitService TransitService
         => NewRequestScope().ServiceProvider.GetRequiredService<ITransitService>();
+
+    public IDriverSessionService DriverSessionService
+        => NewRequestScope().ServiceProvider.GetRequiredService<IDriverSessionService>();
+
+    public IDriverTrackingService DriverTrackingService
+        => NewRequestScope().ServiceProvider.GetRequiredService<IDriverTrackingService>();
 }
